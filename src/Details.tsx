@@ -5,17 +5,23 @@ import AdoptedPetContext from "./AdoptedPetContext";
 import fetchPet from "./fetchPet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
-// import Modal from "./Modal";
+import { PetAPIResponse } from "./APIResponsesTypes";
 
 const Modal = lazy(() => import("./Modal"));
 
 const Details = () => {
+  const { id } = useParams();
+
+  if (!id) {
+    throw new Error('why did you not give me an id?!!! I wanted an id. I have no id.');
+  }
+
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  // eslint-disable-next-line no-unused-vars
+  const results = useQuery<PetAPIResponse>(["details", id], fetchPet);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-  const { id } = useParams();
-  const results = useQuery(["details", id], fetchPet);
 
   if (results.isLoading) {
     return (
@@ -25,7 +31,10 @@ const Details = () => {
     );
   }
 
-  const pet = results.data.pets[0];
+  const pet = results?.data?.pets[0];
+  if (!pet) {
+    throw new Error("no pet lol");
+  }
 
   return (
     <div className="details">
@@ -60,7 +69,7 @@ const Details = () => {
   );
 };
 
-function DetailsErrorBoundary() {
+export default function DetailsErrorBoundary() {
   // props will be only pass thorugh ErrorBoundary if there are any so we can use spread ...props
   return (
     <ErrorBoundary>
@@ -69,12 +78,10 @@ function DetailsErrorBoundary() {
   );
 }
 
-//function DetailsErrorBoundary(props) {
+//export default function DetailsErrorBoundary(props) {
 //  return (
 //    <ErrorBoundary errorComponent={<h2>Blabla bla Error</h2>}>
 //      <Details {...props} />
 //    </ErrorBoundary>
 //  );
 //}
-
-export default DetailsErrorBoundary;

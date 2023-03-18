@@ -12,9 +12,9 @@ const PORT = process.env.PORT || 3001;
 
 const html = fs
   .readFileSync(path.resolve(__dirname, "./dist/client/index.html"))
-  .toString(); // our project is gonna build an html file and we are going to read that html file wjere the css is where the js is
+  .toString(); // our project is gonna build an html file and we are going to read that html file; where the css is, where the js is...
 
-const parts = html.split("not rendered");
+const parts = html.split("not rendered"); // split index.html in two parts (the initial part and the "react" part)
 
 const app = express();
 
