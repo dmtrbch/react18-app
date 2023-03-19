@@ -1,7 +1,9 @@
 import { createContext } from "react";
 import { Pet } from "./APIResponsesTypes";
 
-const AdoptedPetContext = createContext<[Pet, (adpotedPet: Pet) => void]>([
+const AdoptedPetContext = createContext<
+  [Pet | null, (adpotedPet: Pet) => void]
+>([
   {
     id: 1337,
     name: "Fido",
@@ -12,7 +14,7 @@ const AdoptedPetContext = createContext<[Pet, (adpotedPet: Pet) => void]>([
     city: "Seattle",
     state: "WA",
   },
-  () => {}
+  () => {},
 ]); // its best to not have default value for the context, with typescript we must
 
 export default AdoptedPetContext;

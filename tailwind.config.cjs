@@ -4,5 +4,6 @@ module.exports = {
   theme: {
     extend: {},
   },
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   plugins: [require("@tailwindcss/forms")],
 };
