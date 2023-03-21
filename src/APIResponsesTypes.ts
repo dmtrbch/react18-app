@@ -1,4 +1,4 @@
-export type Animal = "dog" | "cat" | "bird" | "reptile" | "rabbit";
+export type Animal = "dog" | "cat" | "bird" | "reptile" | "rabbit" | "";
 
 export interface Pet {
   id: number;
@@ -9,6 +9,12 @@ export interface Pet {
   images: string[];
   city: string;
   state: string;
+}
+
+export interface SearchParams {
+  location: string;
+  breed: string;
+  animal: Animal;
 }
 
 export interface PetAPIResponse {

@@ -1,25 +1,22 @@
-import { useState, useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
-import AdoptedPetContext from "./AdoptedPetContext";
-import fetchSearch from "./fetchSearch";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { all } from "./searchParamsSlice";
+import { useSearchQuery } from "./petApiService";
 import Results from "./Results";
 import useBreedList from "./useBreedList";
 import { Animal } from "./APIResponsesTypes";
 const ANIMALS: Animal[] = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
-  const [requestParams, setRequestParams] = useState({
-    location: "",
-    animal: "" as Animal,
-    breed: "",
-  });
   const [animal, setAnimal] = useState("" as Animal);
+  const searchParams = useAppSelector((state) => state.searchParams);
   const [breeds] = useBreedList(animal); // ova e mnogu biten moment ne mora da bide vo useEffect hook za da ja menja vrednosta!!!
+  const dispatch = useAppDispatch();
 
-  const results = useQuery(["search", requestParams], fetchSearch);
-  const pets = results?.data?.pets ?? [];
+  let { data: pets } = useSearchQuery(searchParams);
+  pets = pets ?? [];
 
-  const [adoptedPet] = useContext(AdoptedPetContext);
+  const adoptedPet = useAppSelector((state) => state.adoptedPet);
 
   return (
     <div className="my-0 mx-auto w-11/12">
@@ -34,10 +31,10 @@ const SearchParams = () => {
             breed: formData.get("breed")?.toString() ?? "",
             location: formData.get("location")?.toString() ?? "",
           };
-          setRequestParams(obj);
+          dispatch(all(obj));
         }}
       >
-        {adoptedPet ? (
+        {adoptedPet && adoptedPet.images.length > 0 ? (
           <div className="pet image-container">
             <img src={adoptedPet.images[0]} alt={adoptedPet.name} />
           </div>
@@ -80,7 +77,7 @@ const SearchParams = () => {
             name="breed"
           >
             <option />
-            {breeds.map((breed) => (
+            {(breeds as string[]).map((breed: string) => (
               <option key={breed}>{breed}</option>
             ))}
           </select>
